@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monker.myblog.mapper.PostMapper">
+
+    <!-- 文章基础列 -->
+    <sql id="Base_Column_List">
+        id, title, slug, summary, cover_url, content_html, toc_json,
+        author_id, category_id, status, is_pinned AS pinned, pinned_at,
+        published_at, like_count, view_count, comment_count, deleted_at,
+        created_at, updated_at
+    </sql>
+
+    <!-- 根据条件查询文章列表（用于分页） -->
+    <select id="selectByCondition" resultType="com.monker.myblog.entity.Post">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM posts
+        <where>
+        deleted_at IS NULL
+            <if test="keyword != null and keyword != ''">
+                AND (title LIKE CONCAT('%', #{keyword}, '%') OR summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="categoryId != null">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="pinned != null">
+                AND is_pinned = #{pinned}
+            </if>
+        </where>
+        ORDER BY is_pinned DESC, published_at DESC, id DESC
+    </select>
+</mapper>

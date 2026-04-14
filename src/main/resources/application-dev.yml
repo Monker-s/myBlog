@@ -1,0 +1,40 @@
+# 文件用途：开发环境配置。
+# 作用说明：提供本地开发默认的 MySQL、Redis、MyBatis 与日志级别设置，便于联调和排错。
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.100.131/myblog?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: a1143693967
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: 192.168.100.131
+      port: 6379
+      database: 0
+      timeout: 3s
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: your-email@qq.com
+    password: your-smtp-authorization-code
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+mybatis:
+  type-aliases-package: com.monker.myblog.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: 'NULL'
+
+logging:
+  level:
+    com.monker.myblog: debug
+    root: info
+    org.springframework.web: debug
+    com.baomidou.mybatisplus: debug

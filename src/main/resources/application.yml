@@ -1,0 +1,33 @@
+# 文件用途：应用公共主配置。
+# 作用说明：定义项目名称、默认环境、Jackson、Flyway、服务端口以及自定义安全与会话基础配置。
+spring:
+  application:
+    name: myBlog
+  profiles:
+    active: dev
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  port: 8081
+  error:
+    include-message: always
+
+app:
+  security:
+    allowed-origins:
+      - http://localhost:5173
+  jwt:
+    secret: MyBlogSecretKeyForJWTTokenGeneration2026ChangeInProduction
+    expiration: 86400000
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
