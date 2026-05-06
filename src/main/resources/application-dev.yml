@@ -47,8 +47,8 @@ app:
     rate-limit-seconds: 10  # 开发环境：10秒内只能发送一次（生产环境建议60秒）
   oss:
     endpoint: oss-cn-guangzhou.aliyuncs.com
-    access-key-id: YOUR_ACCESS_KEY_ID
-    access-key-secret: YOUR_ACCESS_KEY_SECRET
+    access-key-id: ${OSS_ACCESS_KEY_ID:your-access-key-id}
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET:your-access-key-secret}
     bucket-name: monkeblog
     custom-domain:
     allowed-types: jpg,jpeg,png,gif,webp
