@@ -17,15 +17,15 @@ import java.util.List;
  * @param contentHtml 正文 HTML 内容
  * @param tocJson 目录结构 JSON
  * @param categoryId 分类主键
- * @param status 文章状态编码
- * @param pinned 是否置顶
- * @param tagIds 标签主键列表
+ * @param status 文章状态编码（0=草稿, 1=发布, 2=隐藏）
+ * @param isPinned 是否置顶（0=否, 1=是）
+ * @param tags 标签名称列表
+ * @param publishedAt 发布时间
  */
 public record UpsertPostDto(
         @NotBlank(message = "标题不能为空")
         @Size(max = 200, message = "标题长度不能超过200个字符")
         String title,
-        @NotBlank(message = "slug 不能为空")
         @Size(max = 200, message = "slug 长度不能超过200个字符")
         String slug,
         @Size(max = 500, message = "摘要长度不能超过500个字符")
@@ -38,7 +38,8 @@ public record UpsertPostDto(
         Long categoryId,
         @NotNull(message = "文章状态不能为空")
         Integer status,
-        Boolean pinned,
-        List<Long> tagIds
+        Integer isPinned,
+        List<String> tags,
+        java.time.LocalDateTime publishedAt
 ) {
 }

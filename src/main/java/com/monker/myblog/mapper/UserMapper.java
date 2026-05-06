@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-    String BASE_COLUMNS = "id, username, email, password_hash, role, status, last_login_at, created_at, updated_at";
+    String BASE_COLUMNS = "id, username, email, password_hash, icon, role, status, last_login_at, created_at, updated_at";
 
     @Select("SELECT " + BASE_COLUMNS + " FROM users WHERE id = #{id}")
     User selectById(Long id);
@@ -32,7 +32,7 @@ public interface UserMapper extends BaseMapper<User> {
     User findByEmail(String email);
 
     @Select("""
-            SELECT id, username, email, password_hash, role, status, last_login_at, created_at, updated_at
+            SELECT id, username, email, password_hash, icon, role, status, last_login_at, created_at, updated_at
             FROM users
             WHERE username = #{identifier} OR email = #{identifier}
             LIMIT 1
@@ -40,8 +40,8 @@ public interface UserMapper extends BaseMapper<User> {
     User findByUsernameOrEmail(String identifier);
 
     @Insert("""
-            INSERT INTO users (username, email, password_hash, role, status, last_login_at, created_at, updated_at)
-            VALUES (#{username}, #{email}, #{passwordHash}, #{role}, #{status}, #{lastLoginAt}, #{createdAt}, #{updatedAt})
+            INSERT INTO users (username, email, password_hash, icon, role, status, last_login_at, created_at, updated_at)
+            VALUES (#{username}, #{email}, #{passwordHash}, #{icon}, #{role}, #{status}, #{lastLoginAt}, #{createdAt}, #{updatedAt})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(User user);
@@ -51,6 +51,7 @@ public interface UserMapper extends BaseMapper<User> {
             SET username = #{username},
                 email = #{email},
                 password_hash = #{passwordHash},
+                icon = #{icon},
                 role = #{role},
                 status = #{status},
                 last_login_at = #{lastLoginAt},
@@ -62,4 +63,12 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Delete("DELETE FROM users WHERE id = #{id}")
     int deleteById(Long id);
+
+    /**
+     * 函数用途：查询所有正常状态的用户ID。
+     *
+     * @return 用户ID列表
+     */
+    @Select("SELECT id FROM users WHERE status = 1")
+    List<Long> selectAllActiveUserIds();
 }

@@ -48,4 +48,13 @@ public interface CommentMapper extends BaseMapper<Comment> {
 
     @Delete("DELETE FROM comments WHERE id = #{id}")
     int deleteById(Long id);
+
+    /**
+     * 函数用途：查询指定文章的所有评论用户ID（去重）。
+     *
+     * @param postId 文章ID
+     * @return 评论用户ID列表
+     */
+    @Select("SELECT DISTINCT user_id FROM comments WHERE post_id = #{postId}")
+    List<Long> selectUserIdsByPostId(Long postId);
 }

@@ -3,6 +3,7 @@ package com.monker.myblog.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.monker.myblog.entity.Category;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -47,4 +48,20 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     @Delete("DELETE FROM categories WHERE id = #{id}")
     int deleteById(Long id);
+
+    /**
+     * 函数用途：批量查询分类下的文章数量。
+     *
+     * @param categoryIds 分类ID列表
+     * @return 分类ID到文章数量的映射
+     */
+    List<Map<String, Object>> countPostsByCategoryIds(List<Long> categoryIds);
+
+    /**
+     * 函数用途：查询分类总数。
+     *
+     * @return 分类总数
+     */
+    @Select("SELECT COUNT(*) FROM categories")
+    Long countCategories();
 }

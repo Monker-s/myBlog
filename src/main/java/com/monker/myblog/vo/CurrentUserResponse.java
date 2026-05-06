@@ -14,6 +14,7 @@ public record CurrentUserResponse(
         Long id,
         String username,
         String email,
-        Integer role
+        Integer role,
+        String icon
 ) {
 }

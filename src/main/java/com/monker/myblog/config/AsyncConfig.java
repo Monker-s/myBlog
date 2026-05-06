@@ -29,4 +29,20 @@ public class AsyncConfig {
         executor.initialize();
         return executor;
     }
+
+    /**
+     * 函数用途：注册邮件发送专用异步线程池。
+     *
+     * @return 邮件发送异步执行器
+     */
+    @Bean(name = "emailTaskExecutor")
+    public Executor emailTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setThreadNamePrefix("email-send-");
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(4);
+        executor.setQueueCapacity(100);
+        executor.initialize();
+        return executor;
+    }
 }

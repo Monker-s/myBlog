@@ -19,7 +19,7 @@ public interface NotificationMapper extends BaseMapper<Notification> {
 
     String BASE_COLUMNS = """
             id, user_id, type, post_id, content_hash, title, body,
-            is_read AS read, read_at, payload_json, created_at
+            is_read AS isRead, read_at, payload_json, created_at
             """;
 
     @Select("SELECT " + BASE_COLUMNS + " FROM notifications WHERE id = #{id}")
@@ -30,7 +30,7 @@ public interface NotificationMapper extends BaseMapper<Notification> {
 
     @Select("""
             SELECT id, user_id, type, post_id, content_hash, title, body,
-                   is_read AS read, read_at, payload_json, created_at
+                   is_read AS isRead, read_at, payload_json, created_at
             FROM notifications
             WHERE user_id = #{userId} AND is_read = 0
             ORDER BY created_at DESC, id DESC
@@ -43,7 +43,7 @@ public interface NotificationMapper extends BaseMapper<Notification> {
             )
             VALUES (
                 #{userId}, #{type}, #{postId}, #{contentHash}, #{title}, #{body},
-                #{read}, #{readAt}, #{payloadJson}, #{createdAt}
+                #{isRead}, #{readAt}, #{payloadJson}, #{createdAt}
             )
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
@@ -57,7 +57,7 @@ public interface NotificationMapper extends BaseMapper<Notification> {
                 content_hash = #{contentHash},
                 title = #{title},
                 body = #{body},
-                is_read = #{read},
+                is_read = #{isRead},
                 read_at = #{readAt},
                 payload_json = #{payloadJson},
                 created_at = #{createdAt}

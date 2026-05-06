@@ -10,9 +10,10 @@ import java.time.LocalDateTime;
  * @param id 通知主键
  * @param type 通知类型
  * @param postId 关联文章主键
+ * @param postTitle 关联文章标题（可选）
  * @param title 通知标题
  * @param body 通知正文
- * @param read 是否已读
+ * @param isRead 是否已读（0-未读，1-已读）
  * @param readAt 已读时间
  * @param createdAt 创建时间
  */
@@ -20,9 +21,10 @@ public record NotificationResponse(
         Long id,
         String type,
         Long postId,
+        String postTitle,
         String title,
         String body,
-        Boolean read,
+        Integer isRead,
         LocalDateTime readAt,
         LocalDateTime createdAt
 ) {

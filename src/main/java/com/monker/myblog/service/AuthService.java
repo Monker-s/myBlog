@@ -3,8 +3,10 @@ package com.monker.myblog.service;
 import com.monker.myblog.dto.ForgetPasswordDto;
 import com.monker.myblog.dto.LoginDto;
 import com.monker.myblog.dto.RegisterDto;
+import com.monker.myblog.dto.UpdateUserInfoDto;
 import com.monker.myblog.vo.AuthSessionResponse;
 import com.monker.myblog.vo.CurrentUserResponse;
+import jakarta.validation.Valid;
 
 /**
  * 文件用途：定义认证业务能力。
@@ -61,4 +63,11 @@ public interface AuthService {
      * @param scene 使用场景（register: 注册, forgot: 忘记密码）
      */
     void sendVerificationCode(String email, String scene);
+
+    /**
+     * 函数用途：更新用户信息。
+     *
+     * @param request 更新参数
+     */
+    void updateUserInfo(@Valid UpdateUserInfoDto request);
 }

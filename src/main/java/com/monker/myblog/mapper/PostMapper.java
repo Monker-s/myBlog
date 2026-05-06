@@ -34,6 +34,15 @@ public interface PostMapper extends BaseMapper<Post> {
     Post selectByIdAndDeletedAtIsNull(Long id);
 
     /**
+     * 函数用途：根据slug查询文章。
+     *
+     * @param slug 文章slug
+     * @return 文章实体
+     */
+    @Select("SELECT " + BASE_COLUMNS + " FROM posts WHERE slug = #{slug} LIMIT 1")
+    Post selectBySlug(String slug);
+
+    /**
      * 函数用途：根据条件查询文章列表（用于分页）。
      * 注意：该方法使用 XML 配置动态 SQL，位于 resources/mapper/PostMapper.xml
      *
@@ -44,6 +53,19 @@ public interface PostMapper extends BaseMapper<Post> {
      * @return 文章列表
      */
     List<Post> selectByCondition(String keyword, Long categoryId, Integer status, Boolean pinned);
+
+    /**
+     * 函数用途：管理后台根据条件查询文章列表（用于分页）。
+     * 注意：该方法使用 XML 配置动态 SQL，位于 resources/mapper/PostMapper.xml
+     *
+     * @param keyword 关键字搜索
+     * @param status 文章状态
+     * @param categorySlug 分类slug
+     * @param authorId 作者ID
+     * @param orderBy 排序字段和方向
+     * @return 文章列表
+     */
+    List<Post> selectAdminList(String keyword, Integer status, String categorySlug, Long authorId, String orderBy);
 
     @Insert("""
             INSERT INTO posts (

@@ -1,5 +1,6 @@
 package com.monker.myblog.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * @param notificationIds 待标记为已读的通知 ID 集合
  */
 public record MarkNotificationReadDto(
+        @JsonProperty("notificationIds")
         @NotEmpty(message = "至少传入一条通知 ID")
         List<Long> notificationIds
 ) {

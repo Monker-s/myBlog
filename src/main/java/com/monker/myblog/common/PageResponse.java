@@ -12,7 +12,9 @@ public record PageResponse<T>(
         List<T> records,
         long total,
         int page,
-        int size
+        int size,
+        int totalPages,
+        long unreadCount
 ) {
 
     /**
@@ -24,6 +26,6 @@ public record PageResponse<T>(
      * @param <T> 分页记录类型
      */
     public static <T> PageResponse<T> empty(int page, int size) {
-        return new PageResponse<>(List.of(), 0, page, size);
+        return new PageResponse<>(List.of(), 0, page, size, 0, 0);
     }
 }

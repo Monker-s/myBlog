@@ -28,6 +28,7 @@ public class User {
     private String username;
     private String email;
     private String passwordHash;
+    private String icon;
     private Integer role;
     private Integer status;
     private LocalDateTime lastLoginAt;

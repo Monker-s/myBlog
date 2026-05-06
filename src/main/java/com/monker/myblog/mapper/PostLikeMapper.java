@@ -53,4 +53,34 @@ public interface PostLikeMapper extends BaseMapper<PostLike> {
      */
     @Delete("DELETE FROM post_likes WHERE user_id = #{userId} AND post_id = #{postId}")
     int deleteByUserIdAndPostId(Long userId, Long postId);
+
+    /**
+     * 函数用途：统计某篇文章的真实点赞数。
+     * 作用说明：以 `post_likes` 明细表为准，避免 `posts.like_count` 因历史异常产生漂移。
+     *
+     * @param postId 文章ID
+     * @return 当前真实点赞数
+     */
+    @Select("SELECT COUNT(1) FROM post_likes WHERE post_id = #{postId}")
+    int countByPostId(Long postId);
+
+    /**
+     * 函数用途：判断用户是否点赞过指定文章。
+     * 作用说明：为点赞切换和点赞状态查询提供数据库真值判断。
+     *
+     * @param userId 用户ID
+     * @param postId 文章ID
+     * @return 命中的点赞记录数
+     */
+    @Select("SELECT COUNT(1) FROM post_likes WHERE user_id = #{userId} AND post_id = #{postId}")
+    int countByUserIdAndPostId(Long userId, Long postId);
+
+    /**
+     * 函数用途：查询点赞指定文章的所有用户ID。
+     *
+     * @param postId 文章ID
+     * @return 点赞用户ID列表
+     */
+    @Select("SELECT user_id FROM post_likes WHERE post_id = #{postId}")
+    List<Long> selectUserIdsByPostId(Long postId);
 }

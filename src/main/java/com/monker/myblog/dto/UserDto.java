@@ -1,6 +1,7 @@
 package com.monker.myblog.dto;
 
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class UserDto {
@@ -8,4 +9,8 @@ public class UserDto {
     private String username;
     private String email;
     private Integer role;
+    private Integer status;
+    private LocalDateTime lastLoginAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

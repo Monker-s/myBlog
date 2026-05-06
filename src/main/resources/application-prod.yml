@@ -12,9 +12,22 @@ spring:
       port: ${BLOG_REDIS_PORT:6379}
       database: ${BLOG_REDIS_DATABASE:0}
       timeout: 3s
+  mail:
+    host: ${MAIL_HOST:smtp.qq.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 mybatis:
   type-aliases-package: com.monker.myblog.entity
+  mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
     jdbc-type-for-null: 'NULL'
@@ -23,3 +36,15 @@ logging:
   level:
     root: info
     com.monker.myblog: info
+
+app:
+  email:
+    rate-limit-seconds: 60  # 生产环境：60秒内只能发送一次
+  oss:
+    endpoint: ${OSS_ENDPOINT:oss-cn-guangzhou.aliyuncs.com}
+    access-key-id: ${OSS_ACCESS_KEY_ID}
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET}
+    bucket-name: ${OSS_BUCKET_NAME:monkeblog}
+    custom-domain: ${OSS_CUSTOM_DOMAIN:}
+    allowed-types: jpg,jpeg,png,gif,webp
+    max-file-size: 5242880

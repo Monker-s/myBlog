@@ -4,6 +4,7 @@ import com.monker.myblog.common.Result;
 import com.monker.myblog.dto.ForgetPasswordDto;
 import com.monker.myblog.dto.LoginDto;
 import com.monker.myblog.dto.RegisterDto;
+import com.monker.myblog.dto.UpdateUserInfoDto;
 import com.monker.myblog.service.AuthService;
 import com.monker.myblog.vo.AuthSessionResponse;
 import com.monker.myblog.vo.CurrentUserResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -114,9 +116,24 @@ public class AuthController {
      * @return 统一成功响应
      */
     @PostMapping("/sendCode")
-    public Result<Void> sendVerificationCode(String email, String scene) {
+    public Result<Void> sendVerificationCode(@RequestParam String email, @RequestParam String scene) {
         log.info("发送验证码：email={}, scene={}", email, scene);
         authService.sendVerificationCode(email, scene);
         return Result.success("验证码已发送", null);
+    }
+
+    /**
+     * 用户修改个人信息
+     * @Body
+     * username
+     * password
+     * email
+     * icon
+     */
+    @PostMapping("/update")
+    public Result<Void> updateUserInfo(@Valid @RequestBody UpdateUserInfoDto request) {
+        log.info("修改个人信息:{}",request);
+        authService.updateUserInfo(request);
+        return Result.success("修改成功", null);
     }
 }

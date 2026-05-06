@@ -1,5 +1,6 @@
 package com.monker.myblog.controller;
 
+import com.monker.myblog.annotation.OperateLog;
 import com.monker.myblog.common.Result;
 import com.monker.myblog.common.PageResponse;
 import com.monker.myblog.dto.PostListDto;
@@ -39,7 +40,7 @@ public class PostController {
      */
     @GetMapping
     public Result<PageResponse<PostListItemResponse>> listPosts(@Valid PostListDto query) {
-        log.info("查询文章列表,{}", query.getPinned());
+        log.info("查询文章列表,{},{}", query.getPinned(),query.getKeyword());
         return Result.success(postService.listPosts(query));
     }
 
@@ -61,6 +62,7 @@ public class PostController {
      * @param postId 文章主键
      * @return 点赞后的交互结果
      */
+    @OperateLog(module = "文章管理", operation = "点赞文章", recordParams = true, recordResult = false)
     @PostMapping("/{postId}/like")
     public Result<PostInteractionResponse> likePost(@PathVariable Long postId) {
         log.info("点赞文章：{}", postId);
@@ -83,11 +85,25 @@ public class PostController {
      * 函数用途：处理文章浏览上报请求。
      *
      * @param postId 文章主键
-     * @return 浏览后的交互结果
+     * @return 成功响应（无数据）
      */
     @PostMapping("/{postId}/view")
-    public Result<PostInteractionResponse> recordView(@PathVariable Long postId) {
-        log.info("文章浏览量：{}", postId);
-        return Result.success(postService.recordView(postId));
+    public Result<Void> recordView(@PathVariable Long postId) {
+        log.info("记录文章浏览：{}", postId);
+        postService.recordView(postId);
+        return Result.success(null);
+    }
+
+    /**
+     * 函数用途：获取文章统一统计信息（点赞数、浏览量、点赞状态）。
+     * 作用说明：从 Redis 读取最新数据，并同步到数据库，保证数据一致性。
+     *
+     * @param postId 文章主键
+     * @return 文章统计信息
+     */
+    @GetMapping("/{postId}/stats")
+    public Result<PostInteractionResponse> getPostStats(@PathVariable Long postId) {
+        log.info("获取文章统计信息：{}", postId);
+        return Result.success(postService.getPostStats(postId));
     }
 }

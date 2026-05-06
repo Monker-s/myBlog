@@ -15,8 +15,8 @@ spring:
   mail:
     host: smtp.qq.com
     port: 587
-    username: your-email@qq.com
-    password: your-smtp-authorization-code
+    username: 2685986106@qq.com  # 替换为你的 QQ 邮箱地址
+    password: wfdttaeosevudegd # 替换为 SMTP 授权码（不是邮箱密码）
     properties:
       mail:
         smtp:
@@ -24,6 +24,9 @@ spring:
           starttls:
             enable: true
             required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 mybatis:
   type-aliases-package: com.monker.myblog.entity
@@ -38,3 +41,15 @@ logging:
     root: info
     org.springframework.web: debug
     com.baomidou.mybatisplus: debug
+
+app:
+  email:
+    rate-limit-seconds: 10  # 开发环境：10秒内只能发送一次（生产环境建议60秒）
+  oss:
+    endpoint: oss-cn-guangzhou.aliyuncs.com
+    access-key-id: YOUR_ACCESS_KEY_ID
+    access-key-secret: YOUR_ACCESS_KEY_SECRET
+    bucket-name: monkeblog
+    custom-domain:
+    allowed-types: jpg,jpeg,png,gif,webp
+    max-file-size: 5242880

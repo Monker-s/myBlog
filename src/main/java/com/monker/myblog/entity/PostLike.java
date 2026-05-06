@@ -1,5 +1,6 @@
 package com.monker.myblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("post_likes")
 public class PostLike {
     private Long id;
     private Long postId;

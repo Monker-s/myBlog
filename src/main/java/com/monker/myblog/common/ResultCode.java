@@ -6,13 +6,15 @@ package com.monker.myblog.common;
  */
 public enum ResultCode {
 
-    SUCCESS(0, "success"),
+    SUCCESS(0, "操作成功"),
     INVALID_ARGUMENT(4220, "参数校验失败"),
     UNAUTHORIZED(4010, "未认证或认证已过期"),
     FORBIDDEN(4030, "无权访问当前资源"),
     NOT_FOUND(4040, "请求资源不存在"),
+    USER_NOT_FOUND(4041, "用户不存在"),
     CONFLICT(4090, "资源状态冲突"),
     TOO_MANY_REQUESTS(4290, "请求过于频繁"),
+    UPDATE_FAILED(5001, "更新失败"),
     NOT_IMPLEMENTED(5010, "功能骨架已建立，待接入真实业务实现"),
     INTERNAL_ERROR(5000, "服务内部错误");
 

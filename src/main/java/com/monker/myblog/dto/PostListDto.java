@@ -1,5 +1,6 @@
 package com.monker.myblog.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.List;
@@ -20,6 +21,22 @@ public class PostListDto {
 
     /** 分类筛选条件，对应 category_id。 */
     private Long categoryId;
+    
+    /**
+     * 兼容前端的 category 参数名
+     * @param category 分类ID
+     */
+    public void setCategory(Long category) {
+        this.categoryId = category;
+    }
+    
+    /**
+     * 获取 category（与 getCategoryId 相同）
+     * @return 分类ID
+     */
+    public Long getCategory() {
+        return this.categoryId;
+    }
 
     /** 标签筛选条件，用于多标签组合过滤。 */
     private List<Long> tagIds;

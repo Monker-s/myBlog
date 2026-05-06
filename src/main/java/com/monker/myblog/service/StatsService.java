@@ -1,5 +1,6 @@
 package com.monker.myblog.service;
 
+import com.monker.myblog.vo.DataStatusResponse;
 import com.monker.myblog.vo.UvTrendPointResponse;
 import java.util.List;
 
@@ -15,4 +16,18 @@ public interface StatsService {
      * @return UV/PV 趋势点集合
      */
     List<UvTrendPointResponse> getRecentUvTrends();
+
+    /**
+     * 函数用途：获取文章统计数据。
+     *
+     * @return 文章统计响应对象
+     */
+    DataStatusResponse getPostStats();
+
+    /**
+     * 函数用途：获取用户统计数据。
+     *
+     * @return 用户统计响应对象
+     */
+    DataStatusResponse getUserStats();
 }

@@ -10,6 +10,12 @@ public enum NotificationType {
     POST_UPDATED,
     /** 评论收到回复时触发的通知。 */
     COMMENT_REPLY,
+    /** 有人评论了用户的文章时触发的通知。 */
+    COMMENT_ON_POST,
     /** 系统级通知。 */
-    SYSTEM
+    SYSTEM,
+    /** 更新日志通知。 */
+    CHANGELOG;
+
+
 }

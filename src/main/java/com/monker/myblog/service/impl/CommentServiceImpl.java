@@ -3,14 +3,23 @@ package com.monker.myblog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monker.myblog.common.NotificationType;
+import com.monker.myblog.common.ResultCode;
 import com.monker.myblog.dto.CreateCommentDto;
 import com.monker.myblog.dto.ReplyCommentDto;
+import com.monker.myblog.dto.UserDto;
 import com.monker.myblog.entity.Comment;
+import com.monker.myblog.entity.Post;
 import com.monker.myblog.entity.User;
+import com.monker.myblog.exception.BusinessException;
 import com.monker.myblog.mapper.CommentMapper;
+import com.monker.myblog.mapper.PostMapper;
 import com.monker.myblog.mapper.UserMapper;
 import com.monker.myblog.service.CommentService;
+import com.monker.myblog.service.NotificationPublisher;
+import com.monker.myblog.service.PostService;
 import com.monker.myblog.util.RedisContents;
+import com.monker.myblog.util.UserHolder;
 import com.monker.myblog.vo.CommentResponse;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import static com.monker.myblog.util.RedisContents.POST_COMMENT;
 
@@ -37,7 +47,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentMapper commentMapper;
-    
+
+    @Autowired
+    private PostService postService;
+
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     
@@ -46,7 +59,12 @@ public class CommentServiceImpl implements CommentService {
     
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private PostMapper postMapper;
     
+    @Autowired
+    private NotificationPublisher notificationPublisher;
+
     /**
      * 函数用途：查询文章评论列表（滚动加载）。
      * 实现逻辑：基于 lastCommentTime 游标查询，使用 Redis ZSET 缓存，同时查询子回复
@@ -284,9 +302,14 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public CommentResponse createComment(Long postId, CreateCommentDto request) {
-        // TODO: 从当前登录用户获取 userId 和 username
-        Long userId = 1L;
-        String username = "测试用户";
+        // 获取当前登录用户信息
+        UserDto currentUser = UserHolder.getUserId();
+        if (currentUser == null || currentUser.getId() == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED, "请先登录后再评论");
+        }
+        
+        Long userId = currentUser.getId();
+        String username = currentUser.getUsername();
         LocalDateTime now = LocalDateTime.now();
         
         Comment comment = Comment.builder()
@@ -302,9 +325,25 @@ public class CommentServiceImpl implements CommentService {
         
         commentMapper.insert(comment);
         
+        // 更新数据库posts的评论数
+        updatePostCommentCount(postId);
+
         // 清除缓存
         String cacheKey = POST_COMMENT + postId;
         stringRedisTemplate.delete(cacheKey);
+        
+        // 发送通知给文章作者（如果不是自己评论自己的文章）
+        Post post = postMapper.selectById(postId);
+        if (post != null && !post.getAuthorId().equals(userId)) {
+            notificationPublisher.publishPersonalNotification(
+                    post.getAuthorId(),
+                    NotificationType.COMMENT_ON_POST,
+                    postId,
+                    "新评论",
+                    "用户 " + username + " 评论了你的文章",
+                    null
+            );
+        }
         
         return new CommentResponse(
                 comment.getId(),
@@ -339,9 +378,14 @@ public class CommentServiceImpl implements CommentService {
             throw new RuntimeException("只能回复一级评论");
         }
         
-        // TODO: 从当前登录用户获取 userId 和 username
-        Long userId = 1L;
-        String username = "测试用户";
+        // 获取当前登录用户信息
+        UserDto currentUser = UserHolder.getUserId();
+        if (currentUser == null || currentUser.getId() == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED, "请先登录后再回复");
+        }
+        
+        Long userId = currentUser.getId();
+        String username = currentUser.getUsername();
         LocalDateTime now = LocalDateTime.now();
         
         Comment reply = Comment.builder()
@@ -363,9 +407,31 @@ public class CommentServiceImpl implements CommentService {
             throw new RuntimeException("回复创建失败");
         }
         
+        // 更新数据库posts的评论数
+        updatePostCommentCount(parentComment.getPostId());
+        
         // 清除缓存
         String cacheKey = POST_COMMENT + parentComment.getPostId();
         stringRedisTemplate.delete(cacheKey);
+        
+        // 发送通知给被回复的评论作者（如果不是自己回复自己）
+        if (!parentComment.getUserId().equals(userId)) {
+            log.info("准备发送评论回复通知 - 父评论ID: {}, 父评论作者ID: {}, 回复者ID: {}", 
+                    commentId, parentComment.getUserId(), userId);
+            
+            notificationPublisher.publishPersonalNotification(
+                    parentComment.getUserId(),
+                    NotificationType.COMMENT_REPLY,
+                    parentComment.getPostId(),
+                    "新回复",
+                    "用户 " + username + " 回复了你的评论",
+                    null
+            );
+            
+            log.info("评论回复通知已发送 - 父评论ID: {}", commentId);
+        } else {
+            log.debug("自己回复自己的评论，不发送通知 - 评论ID: {}", commentId);
+        }
         
         return new CommentResponse(
                 insertedReply.getId(),
@@ -378,5 +444,27 @@ public class CommentServiceImpl implements CommentService {
                 insertedReply.getCreatedAt(),
                 new ArrayList<>()
         );
+    }
+
+    /**
+     * 函数用途：更新文章的评论数。
+     *
+     * @param postId 文章主键
+     */
+    private void updatePostCommentCount(Long postId) {
+        // 查询当前文章的评论总数（只统计已审核的评论）
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Comment::getPostId, postId)
+                .eq(Comment::getStatus, 1); // 只统计已审核的评论
+        
+        long commentCount = commentMapper.selectCount(queryWrapper);
+        
+        // 更新posts表的comment_count字段
+        Post post = postMapper.selectById(postId);
+        if (post != null) {
+            post.setCommentCount((int) commentCount);
+            postMapper.updateById(post);
+            log.info("更新文章评论数成功，postId={}, commentCount={}", postId, commentCount);
+        }
     }
 }

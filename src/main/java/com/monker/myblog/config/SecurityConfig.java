@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/api/config/**", "/api/posts/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login", "/api/auth/forgot", "/api/auth/sendCode", "/api/posts/*/view").permitAll()
+                        .requestMatchers("/ws/notifications").permitAll()  // 放行 WebSocket 端点
                         .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)

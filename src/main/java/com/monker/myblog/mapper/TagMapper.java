@@ -26,6 +26,15 @@ public interface TagMapper extends BaseMapper<Tag> {
     List<Tag> selectAll();
 
     /**
+     * 函数用途：根据标签名称查询标签。
+     *
+     * @param name 标签名称
+     * @return 标签实体
+     */
+    @Select("SELECT " + BASE_COLUMNS + " FROM tags WHERE name = #{name} LIMIT 1")
+    Tag selectByName(String name);
+
+    /**
      * 函数用途：根据文章ID查询标签名称列表。
      *
      * @param postId 文章ID
@@ -39,6 +48,21 @@ public interface TagMapper extends BaseMapper<Tag> {
             ORDER BY t.id ASC
             """)
     List<String> selectNamesByPostId(Long postId);
+
+    /**
+     * 函数用途：根据文章ID查询标签完整信息列表。
+     *
+     * @param postId 文章ID
+     * @return 标签实体列表
+     */
+    @Select("""
+            SELECT t.id, t.name, t.slug, t.post_count, t.created_at
+            FROM tags t
+            INNER JOIN post_tags pt ON t.id = pt.tag_id
+            WHERE pt.post_id = #{postId}
+            ORDER BY t.id ASC
+            """)
+    List<Tag> selectTagsByPostId(Long postId);
 
     @Insert("""
             INSERT INTO tags (name, slug, post_count, created_at)

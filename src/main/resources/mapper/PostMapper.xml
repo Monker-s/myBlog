@@ -13,23 +13,65 @@
     <!-- 根据条件查询文章列表（用于分页） -->
     <select id="selectByCondition" resultType="com.monker.myblog.entity.Post">
         SELECT
+        p.id, p.title, p.slug, p.summary, p.cover_url, p.content_html, p.toc_json,
+        p.author_id, p.category_id, p.status, p.is_pinned AS pinned, p.pinned_at,
+        p.published_at, p.like_count, p.view_count,
+        COALESCE(comment_stats.comment_count, 0) AS comment_count,
+        p.deleted_at, p.created_at, p.updated_at
+        FROM posts p
+        LEFT JOIN (
+            SELECT post_id, COUNT(*) as comment_count
+            FROM comments
+            WHERE status = 1
+            GROUP BY post_id
+        ) comment_stats ON p.id = comment_stats.post_id
+        <where>
+        p.deleted_at IS NULL
+            <if test="keyword != null and keyword != ''">
+                AND (p.title LIKE CONCAT('%', #{keyword}, '%') OR p.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="categoryId != null">
+                AND p.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                AND p.status = #{status}
+            </if>
+            <if test="pinned != null">
+                AND p.is_pinned = #{pinned}
+            </if>
+        </where>
+        ORDER BY p.is_pinned DESC, p.published_at DESC, p.id DESC
+    </select>
+
+    <!-- 管理后台根据条件查询文章列表（用于分页） -->
+    <select id="selectAdminList" resultType="com.monker.myblog.entity.Post">
+        SELECT
         <include refid="Base_Column_List"/>
         FROM posts
         <where>
-        deleted_at IS NULL
+            deleted_at IS NULL
             <if test="keyword != null and keyword != ''">
                 AND (title LIKE CONCAT('%', #{keyword}, '%') OR summary LIKE CONCAT('%', #{keyword}, '%'))
-            </if>
-            <if test="categoryId != null">
-                AND category_id = #{categoryId}
             </if>
             <if test="status != null">
                 AND status = #{status}
             </if>
-            <if test="pinned != null">
-                AND is_pinned = #{pinned}
+            <if test="categorySlug != null and categorySlug != ''">
+                AND category_id IN (
+                    SELECT id FROM categories WHERE slug = #{categorySlug}
+                )
+            </if>
+            <if test="authorId != null">
+                AND author_id = #{authorId}
             </if>
         </where>
-        ORDER BY is_pinned DESC, published_at DESC, id DESC
+        <choose>
+            <when test="orderBy != null and orderBy != ''">
+                ORDER BY ${orderBy}
+            </when>
+            <otherwise>
+                ORDER BY updated_at DESC, id DESC
+            </otherwise>
+        </choose>
     </select>
 </mapper>
