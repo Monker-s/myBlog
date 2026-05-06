@@ -1,0 +1,1 @@
+function a({title:t,description:n}={}){if(t&&(document.title=t),!n)return;let e=document.querySelector('meta[name="description"]');e||(e=document.createElement("meta"),e.setAttribute("name","description"),document.head.appendChild(e)),e.setAttribute("content",n)}export{a as s};

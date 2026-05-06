@@ -1,0 +1,19 @@
+:root {
+  --bg-color: #060b13;
+  --bg-color-soft: #0b1423;
+  --surface-color: rgba(10, 19, 34, 0.88);
+  --surface-color-strong: rgba(11, 16, 27, 0.95);
+  --panel-metal: linear-gradient(145deg, rgba(12, 26, 49, 0.96), rgba(22, 36, 64, 0.88));
+  --primary-color: #2f63d9;
+  --primary-glow: #1fd2ff;
+  --accent-color: #d4a63b;
+  --accent-soft: #f2d489;
+  --danger-color: #d64949;
+  --ok-color: #56c789;
+  --text-color: #e9effa;
+  --text-muted: #93a7c8;
+  --border-color: rgba(121, 158, 214, 0.34);
+  --border-strong: rgba(223, 182, 92, 0.46);
+  --shadow-sm: 0 10px 25px rgba(2, 8, 19, 0.55);
+  --shadow-lg: 0 18px 44px rgba(1, 6, 16, 0.72);
+}

@@ -1,0 +1,13 @@
+定义的 schemas: [
+  'Envelope',
+  'AuthLoginRequest',
+  'AuthRegisterRequest',
+  'ViewReportRequest',
+  'CreateCommentRequest',
+  'ReplyCommentRequest',
+  'MarkNotificationsReadRequest',
+  'AdminPostUpsertRequest',
+  'UserRoleUpdateRequest',
+  'DecorationConfig',
+  'UserStatusUpdateRequest'
+]

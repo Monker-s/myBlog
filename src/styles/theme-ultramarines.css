@@ -1,0 +1,290 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap");
+
+body {
+  color: var(--text-color);
+  background:
+    radial-gradient(1200px 620px at -5% -10%, rgba(31, 210, 255, 0.18), transparent 54%),
+    radial-gradient(900px 480px at 115% -18%, rgba(212, 166, 59, 0.2), transparent 54%),
+    radial-gradient(700px 400px at 80% 120%, rgba(214, 73, 73, 0.12), transparent 45%),
+    linear-gradient(160deg, #02050d 0%, #081122 50%, #050d1a 100%);
+  font-family: "Rajdhani", "Noto Sans SC", "PingFang SC", sans-serif;
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  animation: gridPulse 7s ease-in-out infinite;
+  opacity: 0.5;
+  z-index: -3;
+}
+
+body::after {
+  /* 金属颗粒叠层，让画面不会“平” */
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.04), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.03), transparent 36%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.018) 0,
+      rgba(255, 255, 255, 0.018) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: screen;
+  animation: staticShift 1.2s steps(8) infinite;
+  opacity: 0.54;
+  z-index: -2;
+}
+
+h1,
+h2,
+h3,
+.brand-title,
+.command-title {
+  font-family: "Cinzel", "Noto Serif SC", serif;
+  letter-spacing: 0.04em;
+}
+
+.app-shell {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 16px 20px;
+}
+
+.app-shell::before {
+  content: "";
+  position: absolute;
+  inset: 85px 6px auto auto;
+  width: 280px;
+  height: 280px;
+  pointer-events: none;
+  opacity: 0.08;
+  background: url("/images/imperial-eagle.webp") center/contain no-repeat;
+  filter: contrast(1.2) sepia(0.4);
+}
+
+.app-grid {
+  margin-top: 14px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 320px minmax(0, 1fr);
+  align-items: start;
+}
+
+.app-sidebar {
+  position: sticky;
+  top: 86px;
+  height: fit-content;
+}
+
+.app-main {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.panel-surface {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background: var(--panel-metal);
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 0 24px rgba(31, 210, 255, 0.07);
+  backdrop-filter: blur(4px);
+}
+
+.page-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background:
+    linear-gradient(150deg, rgba(8, 16, 30, 0.92), rgba(12, 21, 36, 0.9)),
+    linear-gradient(20deg, rgba(255, 255, 255, 0.02), transparent 40%),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.013) 0,
+      rgba(255, 255, 255, 0.013) 3px,
+      transparent 3px,
+      transparent 6px
+    );
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  padding: 16px;
+}
+
+.page-panel::before,
+.panel-surface::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 11px;
+  pointer-events: none;
+}
+
+.page-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 0 35%,
+      rgba(31, 210, 255, 0.08) 45%,
+      transparent 58%
+    );
+  animation: energySweep 6s linear infinite;
+}
+
+.command-banner {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  padding: 16px;
+  min-height: 170px;
+  background:
+    linear-gradient(
+      95deg,
+      rgba(5, 14, 28, 0.97) 0%,
+      rgba(8, 21, 40, 0.82) 42%,
+      rgba(8, 21, 40, 0.35) 100%
+    ),
+    url("/images/ultra-helmet.png") center/cover no-repeat;
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 40px rgba(31, 210, 255, 0.18);
+}
+
+.command-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 19, 33, 0), rgba(10, 19, 33, 0.78));
+  pointer-events: none;
+}
+
+.command-banner::after {
+  content: "";
+  position: absolute;
+  inset: -40% -30%;
+  pointer-events: none;
+  background: linear-gradient(
+    125deg,
+    transparent 40%,
+    rgba(31, 210, 255, 0.13) 50%,
+    transparent 60%
+  );
+  animation: energySweep 5.8s linear infinite;
+}
+
+.command-banner .command-content {
+  position: relative;
+  z-index: 1;
+  max-width: 70ch;
+}
+
+.command-banner .command-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.8vw, 2.4rem);
+  color: #f5f7fb;
+  text-shadow:
+    0 0 10px rgba(31, 210, 255, 0.35),
+    0 0 26px rgba(31, 210, 255, 0.18);
+}
+
+.command-banner .command-sub {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+}
+
+.command-banner .command-chip {
+  display: inline-flex;
+  margin-top: 12px;
+  border: 1px solid rgba(212, 166, 59, 0.65);
+  border-radius: 7px;
+  padding: 4px 12px;
+  color: var(--accent-soft);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(145deg, rgba(212, 166, 59, 0.17), rgba(212, 166, 59, 0.03));
+  box-shadow: inset 0 0 10px rgba(212, 166, 59, 0.2);
+}
+
+.el-drawer {
+  background: var(--surface-color-strong);
+  color: var(--text-color);
+}
+
+.el-drawer__header {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.el-drawer__title {
+  color: var(--text-color);
+}
+
+@keyframes energySweep {
+  0% {
+    transform: translateX(-60%) translateY(-10%) rotate(8deg);
+  }
+  100% {
+    transform: translateX(60%) translateY(10%) rotate(8deg);
+  }
+}
+
+@keyframes gridPulse {
+  0%,
+  100% {
+    opacity: 0.34;
+  }
+  50% {
+    opacity: 0.58;
+  }
+}
+
+@keyframes staticShift {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(4px);
+  }
+}
+
+@media (max-width: 1080px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-sidebar {
+    display: none;
+  }
+
+  .command-banner {
+    min-height: 150px;
+    background-position: center;
+  }
+}

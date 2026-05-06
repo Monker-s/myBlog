@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(c:\\Users\\asd\\Desktop/**)",
+      "Read(c:\\Users\\asd\\Desktop\\1/**)",
+      "Bash(node *)",
+      "Bash(del *)",
+      "Bash(npm run *)",
+      "Bash(rd *)"
+    ]
+  },
+  "$version": 3
+}

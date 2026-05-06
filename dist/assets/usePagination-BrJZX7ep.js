@@ -1,0 +1,1 @@
+import{p as u,m as t}from"./index-V_7UXbkL.js";function f(o=1,s=10){const e=t(o),a=t(s),n=t(0),r=u(()=>(e.value-1)*a.value);return{page:e,pageSize:a,total:n,offset:r,resetPage:()=>{e.value=1}}}export{f as u};
